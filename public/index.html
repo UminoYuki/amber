@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>琥珀 · 动漫观影档案</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23161310'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23d9a441'/%3E%3Ccircle cx='13.5' cy='13.5' r='2' fill='%23f3ddab'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/app.css">
+</head>
+<body>
+
+<header class="masthead">
+  <div class="brand">
+    <span class="logo" aria-hidden="true"><i></i></span>
+    <div class="brand-text">
+      <h1>琥珀</h1>
+      <p class="sub">AMBER · 动漫观影档案</p>
+    </div>
+  </div>
+  <dl class="stats" id="stats" aria-label="档案统计"></dl>
+  <div class="mast-actions">
+    <button class="ghost-btn" id="srcBtn" type="button" title="数据源" aria-label="数据源设置" aria-haspopup="dialog">⚙</button>
+    <button class="ghost-btn" id="themeBtn" title="切换明暗">◐</button>
+  </div>
+</header>
+
+<div class="toolbar" id="toolbar">
+  <nav class="view-switch" id="viewSwitch">
+    <button data-view="grid" class="on">海报墙</button>
+    <button data-view="timeline">年代长廊</button>
+  </nav>
+  <div class="chips" id="statusChips"></div>
+  <div class="toolbar-right">
+    <select id="sortSel" title="排序">
+      <option value="year-desc">作品年份 ↓</option>
+      <option value="year-asc">作品年份 ↑</option>
+      <option value="rating-desc">我的评分 ↓</option>
+      <option value="created-desc">记录时间 ↓</option>
+      <option value="title">标题 A→Z</option>
+    </select>
+    <input id="searchInput" type="search" placeholder="搜索标题 / 标签…" spellcheck="false">
+  </div>
+</div>
+
+<main id="main">
+  <section id="gridView" class="grid" aria-label="海报墙"></section>
+  <section id="timelineView" class="timeline" aria-label="年代长廊" hidden></section>
+  <div id="emptyState" class="empty" hidden>
+    <p>没有匹配的条目。</p>
+    <p class="hint">换个筛选条件，或清空搜索词试试。</p>
+  </div>
+  <div id="sourceEmpty" class="empty" hidden>
+    <p>还没有连上条目目录。</p>
+    <p class="hint" id="sourceEmptyMsg"></p>
+    <p><button class="primary-btn" id="sourceEmptyBtn" type="button">打开「数据源」</button></p>
+  </div>
+</main>
+
+<footer class="colophon" id="colophon"></footer>
+
+<!-- 详情 -->
+<div class="backdrop" id="detailBackdrop" hidden>
+  <article class="detail" id="detailPanel" role="dialog" aria-modal="true"></article>
+</div>
+
+<!-- 制卡 -->
+<div class="backdrop" id="cardBackdrop" hidden>
+  <div class="designer" role="dialog" aria-modal="true">
+    <header class="designer-head">
+      <h2>制卡 · <span id="cdTitle"></span></h2>
+      <div class="designer-head-right">
+        <div class="style-tabs" id="cardStyles"></div>
+        <button class="ghost-btn" id="cdClose" title="关闭">✕</button>
+      </div>
+    </header>
+    <div class="designer-body">
+      <div class="card-stage-wrap" id="cardStageWrap">
+        <div class="card-stage" id="cardStage"></div>
+      </div>
+      <aside class="designer-side">
+        <p class="side-note" id="cdFsHint"></p>
+        <label class="side-row">短评字号
+          <input type="range" id="cdFs" min="60" max="150" step="5">
+          <output id="cdFsOut"></output>
+        </label>
+        <label class="side-row check"><input type="checkbox" id="cdEra"><span>标注和历年代（平成 / 令和）</span></label>
+        <button class="primary-btn" id="cdDownload">导出 PNG（1800 × 2400）</button>
+        <p class="side-hint">卡片右下角会自动带上「记录于」时间戳与作品年份。</p>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<!-- 数据源 -->
+<div class="backdrop" id="srcBackdrop" hidden>
+  <div class="srcbox" role="dialog" aria-modal="true" aria-labelledby="srcTitle">
+    <header class="designer-head">
+      <h2 id="srcTitle">数据源</h2>
+      <button class="ghost-btn" id="srcClose" type="button" title="关闭" aria-label="关闭">✕</button>
+    </header>
+    <div class="src-body">
+      <div class="src-label">当前</div>
+      <div class="src-card" id="srcCurrent">读取中…</div>
+      <label class="src-label" for="srcEntries">条目目录（必填）</label>
+      <input class="src-input" id="srcEntries" type="text" spellcheck="false" autocomplete="off"
+        placeholder="例如 D:\Obsidian\MyVault\12媒体档案\动漫\entries">
+      <label class="src-label" for="srcCovers">封面目录（可选）</label>
+      <input class="src-input" id="srcCovers" type="text" spellcheck="false" autocomplete="off"
+        placeholder="例如 D:\Obsidian\MyVault\12媒体档案\assets\covers">
+      <div class="src-actions">
+        <button class="outline-btn" id="srcCheck" type="button">检测</button>
+        <button class="primary-btn" id="srcSave" type="button" disabled>保存并重新载入</button>
+      </div>
+      <div class="src-card" id="srcResult" hidden></div>
+      <p class="src-msg" id="srcMsg" role="status"></p>
+      <p class="src-tip">条目目录里至少要有一篇带 <code>title</code> frontmatter 的 <code>.md</code> 笔记；封面目录可留空，填了就必须存在。保存后写入本项目的 <code>config.json</code>，立即生效，无需重启。对 Obsidian 库只读。</p>
+    </div>
+  </div>
+</div>
+
+<script src="/app.js"></script>
+</body>
+</html>
