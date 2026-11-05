@@ -11,6 +11,20 @@
 - **数据源面板**：在页面上查看、检测、更换条目目录和封面目录，保存后立即生效
 - 明暗两套主题，偏好记在浏览器本地
 
+## 截图
+
+**海报墙**
+
+![海报墙](docs/screenshots/poster-wall.jpg)
+
+**年代长廊**
+
+![年代长廊](docs/screenshots/timeline.jpg)
+
+**制卡**
+
+![制卡](docs/screenshots/card-maker.jpg)
+
 ## 运行
 
 需要 [Node.js](https://nodejs.org/) 18 或更高版本。
